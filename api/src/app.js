@@ -1,11 +1,16 @@
 import express from "express";
-import dotenv from "dotenv";
-
-dotenv.config();
+import config from "./config/index.js";
+import { routes } from "./routes/index.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-	console.log(`Servidor Rodando na porta ${PORT}`);
+const PORT = config.PORT;
+const HOST = config.HOST;
+
+app.use(express.json());
+
+app.use("/api", routes);
+
+app.listen(PORT, HOST, () => {
+	console.log(`Servidor Rodando em ${HOST} na porta ${PORT}`);
 });
