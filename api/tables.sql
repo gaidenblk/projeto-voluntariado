@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     apelido VARCHAR(50),
     email VARCHAR(100) UNIQUE NOT NULL,
     senha TEXT NOT NULL,
-    tipo VARCHAR(10) CHECK (tipo IN ('admin', 'usuario')) NOT NULL,
+    tipo VARCHAR(10) DEFAULT ('usuario') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
