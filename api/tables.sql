@@ -14,11 +14,13 @@ CREATE TABLE IF NOT EXISTS activities (
     titulo VARCHAR(255) NOT NULL,
     descricao TEXT NOT NULL,
     data TIMESTAMP NOT NULL,
-    local VARCHAR(255) NOT NULL
+    local VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS user_activity (
     atividade_id INT REFERENCES activities(id) ON DELETE CASCADE,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    PRIMARY KEY (atividade_id, user_id)
+    usuario_id INT REFERENCES users(id) ON DELETE CASCADE,
+    PRIMARY KEY (atividade_id, usuario_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

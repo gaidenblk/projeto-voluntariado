@@ -1,11 +1,9 @@
 import { Router } from "express";
+import { activitiesController } from "../controllers/activitiesController.js";
 
 export const activitiesRouter = Router();
 
-activitiesRouter.get("/list");
-activitiesRouter.get("/:user_id/list");
-activitiesRouter.post("/create");
-activitiesRouter.patch("/:atividade_id/");
-activitiesRouter.delete("/:atividade_id/");
-activitiesRouter.post("/:atividade_id/subscribe");
-activitiesRouter.delete("/:atividade_id/unsubscribe");
+activitiesRouter.post("/create", activitiesController.createNewActivity);
+activitiesRouter.get("/all", activitiesController.listAll);
+activitiesRouter.patch("/update/:atividade_id", activitiesController.updateActivity);
+activitiesRouter.delete("/delete/:atividade_id", activitiesController.deleteActivity);

@@ -33,9 +33,13 @@ export const authServices = {
 		}
 
 		try {
-			const token = jwt.sign({ id: user.id, email: user.email }, config.SECRET_KEY, {
-				expiresIn: 864000,
-			});
+			const token = jwt.sign(
+				{ id: user.id, email: user.email, apelido: user.apelido, tipo: user.tipo },
+				config.SECRET_KEY,
+				{
+					expiresIn: 864000,
+				},
+			);
 			return {
 				auth: true,
 				token: token,
