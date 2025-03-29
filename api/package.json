@@ -5,7 +5,8 @@
 	"scripts": {
 		"start": "node ./src/app.js",
 		"dev": "node --watch ./src/app.js",
-		"migrate": "node ./src/database/migrate.js"
+		"migrate": "node ./src/database/migrate.js",
+		"seed": "node ./src/database/seed.js"
 	},
 	"keywords": [],
 	"author": "",
