@@ -25,6 +25,15 @@ export const userController = {
 			return;
 		}
 
+		if (apelido === "admin") {
+			errorResponse(res, {
+				error: "BAD_REQUEST",
+				message: "Apelido não pode ser admin, escolha outro...",
+				statusCode: 400,
+			});
+			return;
+		}
+
 		if (!email) {
 			errorResponse(res, {
 				error: "BAD_REQUEST",
@@ -91,7 +100,7 @@ export const userController = {
 	},
 
 	updateExistentUser: async (req, res) => {
-		const id = req.params.id;
+		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 		const { nome, email, senha, tipo } = req.body;
 
@@ -130,7 +139,7 @@ export const userController = {
 
 		try {
 			const updatedUser = await userServices.updateUser(
-				id,
+				usuario_id,
 				nome,
 				email,
 				senha,
@@ -149,7 +158,7 @@ export const userController = {
 	},
 
 	deleteExistentUser: async (req, res) => {
-		const id = req.params.id;
+		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
 		if (isNaN(id)) {
@@ -162,7 +171,7 @@ export const userController = {
 		}
 
 		try {
-			const deletado = await userServices.deleteUser(id, actualUser);
+			const deletado = await userServices.deleteUser(usuario_id, actualUser);
 			res.clearCookie("session_id");
 			res.status(200).json({
 				sucess: true,
@@ -176,6 +185,7 @@ export const userController = {
 
 	subscribeToActivity: async (req, res) => {
 		const atividade_id = req.params.atividade_id;
+		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
 		if (isNaN(atividade_id)) {
@@ -188,7 +198,11 @@ export const userController = {
 		}
 
 		try {
-			const subscribe = await userServices.subscribeToActivity(atividade_id, actualUser);
+			const subscribe = await userServices.subscribeToActivity(
+				atividade_id,
+				usuario_id,
+				actualUser,
+			);
 			res.status(200).json({
 				sucess: true,
 				message: "Usuário Inscrito com sucesso na atividade",
@@ -229,6 +243,7 @@ export const userController = {
 
 	unsubscribeActivity: async (req, res) => {
 		const atividade_id = req.params.atividade_id;
+		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
 		if (isNaN(atividade_id)) {
@@ -241,7 +256,11 @@ export const userController = {
 		}
 
 		try {
-			const unsubscribe = await userServices.unsubscribeToActivity(atividade_id, actualUser);
+			const unsubscribe = await userServices.unsubscribeToActivity(
+				atividade_id,
+				usuario_id,
+				actualUser,
+			);
 			res.status(200).json({
 				sucess: true,
 				message: "Usuário Removido com sucesso da atividade",

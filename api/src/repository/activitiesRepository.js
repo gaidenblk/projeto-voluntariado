@@ -68,7 +68,17 @@ export const activitiesRepository = {
 
 	listAllAvailable: async () => {
 		const client = await pool.connect();
-		const query = `SELECT * FROM activities WHERE data >= CURRENT_DATE`;
+		const query = `
+        SELECT a.*
+        FROM activities a
+        LEFT JOIN (
+            SELECT atividade_id, COUNT(usuario_id) AS inscritos
+            FROM user_activity
+            GROUP BY atividade_id
+        ) ua ON a.id = ua.atividade_id
+        WHERE a.data > CURRENT_DATE
+        AND COALESCE(ua.inscritos, 0) < 10;
+    `;
 		try {
 			const { rows } = await client.query(query);
 			return rows;
@@ -81,12 +91,23 @@ export const activitiesRepository = {
 
 	listAvailableById: async (atividade_id) => {
 		const client = await pool.connect();
-		const query = `SELECT * FROM activities WHERE id = $1 AND data >= CURRENT_DATE`;
+		const query = `
+        SELECT a.*
+        FROM activities a
+        LEFT JOIN (
+            SELECT atividade_id, COUNT(usuario_id) AS inscritos
+            FROM user_activity
+            GROUP BY atividade_id
+        ) ua ON a.id = ua.atividade_id
+        WHERE a.id = $1
+        AND a.data > CURRENT_DATE
+        AND COALESCE(ua.inscritos, 0) < 10;
+    `;
 		try {
 			const { rows } = await client.query(query, [atividade_id]);
-			return rows[0];
+			return rows[0] || null;
 		} catch (error) {
-			throw new InternalServerException("Erro ao Listar Atividades");
+			throw new InternalServerException("Erro ao Listar Atividade");
 		} finally {
 			client.release();
 		}

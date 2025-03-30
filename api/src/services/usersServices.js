@@ -75,9 +75,9 @@ export const userServices = {
 		return await userRepository.delete(id);
 	},
 
-	subscribeToActivity: async (atividade_id, actualUser) => {
+	subscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
 		const [existentUser, existentActivity] = await Promise.all([
-			userRepository.findById(actualUser.id),
+			userRepository.findById(usuario_id),
 			activitiesRepository.listAvailableById(atividade_id),
 		]);
 
@@ -116,9 +116,9 @@ export const userServices = {
 		};
 	},
 
-	unsubscribeToActivity: async (atividade_id, actualUser) => {
+	unsubscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
 		const [existentUser, existentActivity, subscribedActivities] = await Promise.all([
-			userRepository.findById(actualUser.id),
+			userRepository.findById(usuario_id),
 			activitiesRepository.listAvailableById(atividade_id),
 			userRepository.listUserActivitiesById(actualUser.id),
 		]);

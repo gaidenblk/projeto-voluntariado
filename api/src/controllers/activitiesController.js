@@ -90,7 +90,7 @@ export const activitiesController = {
 
 	listActivities: async (req, res) => {
 		try {
-			const activities = await activitiesServices.listActivities();
+			const activities = await activitiesServices.listAllWithUsers();
 			res.status(200).json({
 				sucess: true,
 				message: "Listagem realizada com sucesso!",

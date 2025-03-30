@@ -36,8 +36,39 @@ export const activitiesServices = {
 		return await activitiesRepository.update(id, titulo, descricao, data, local);
 	},
 
-	listActivities: async () => {
-		return await activitiesRepository.listAll();
+	listAllWithUsers: async () => {
+		const [activities, users, userActivities] = await Promise.all([
+			activitiesRepository.listAll(),
+			userRepository.listAll(),
+			userRepository.listAllUserActivities(),
+		]);
+
+		// Para cada atividade, adicionar um campo 'inscritos' com a lista de usuários inscritos
+		const result = activities.map((activity) => {
+			// Buscar os usuários inscritos na atividade com base na lista de user_activity
+			const userActivitiesForActivity = userActivities.filter(
+				(ua) => ua.atividade_id === activity.id,
+			);
+
+			// Montar a lista de usuários inscritos
+			const usersForActivity = userActivitiesForActivity.map((ua) => {
+				const user = users.find((u) => u.id === ua.usuario_id);
+				return {
+					id: user.id,
+					nome: user.nome,
+					apelido: user.apelido,
+					email: user.email,
+				};
+			});
+
+			// Retornar a atividade com os usuários inscritos
+			return {
+				...activity,
+				inscritos: usersForActivity.length > 0 ? usersForActivity : "Nenhum inscrito",
+			};
+		});
+
+		return result;
 	},
 
 	listAvailableActivities: async () => {

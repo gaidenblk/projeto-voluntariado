@@ -18,10 +18,14 @@ async function seed() {
 
 		const query = `
     INSERT INTO users (nome, apelido, email, senha, tipo)
-    VALUES ($1, $2, $3, $4, $5)
-    `;
+    SELECT $1, $2, $3, $4, $5
+    WHERE NOT EXISTS (
+        SELECT 1 FROM users WHERE tipo = 'admin'
+    )
+    RETURNING id;
+`;
 
-		await client.query(query, [
+		const { rows } = await client.query(query, [
 			"Administrador",
 			"admin",
 			"admin@email.com",
@@ -29,14 +33,14 @@ async function seed() {
 			"admin",
 		]);
 
-		console.log("Criação do admin realizada com sucesso!");
-	} catch (error) {
-		if (error.code === "23505") {
-			// Código do PostgreSQL para violação de chave única
-			console.log("Usuário admin já está Registrado no Banco!");
+		if (rows.length === 0) {
+			console.error("Já existe um usuário administrador no sistema.");
 			return;
 		}
-		console.error("Erro na Criação do Admin...", error);
+
+		console.log("Criação do admin realizada com sucesso!");
+	} catch (error) {
+		console.error(error);
 	} finally {
 		console.log("Processo de Seed Finalizado!");
 		await client.end();
