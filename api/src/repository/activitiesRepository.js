@@ -18,7 +18,7 @@ export const activitiesRepository = {
 		}
 	},
 
-	update: async (id, titulo, descricao, data, local) => {
+	update: async (atividade_id, titulo, descricao, data, local) => {
 		const client = await pool.connect();
 		const setClause = [];
 		const values = [];
@@ -36,7 +36,7 @@ export const activitiesRepository = {
 			setClause.push(`local = $${values.push(local)}`);
 		}
 
-		values.push(id);
+		values.push(atividade_id);
 
 		const query = `
           UPDATE activities
@@ -48,6 +48,19 @@ export const activitiesRepository = {
 			return rows[0];
 		} catch (error) {
 			throw new InternalServerException("Erro ao atualizar Atividade");
+		} finally {
+			client.release();
+		}
+	},
+
+	findById: async (atividade_id) => {
+		const client = await pool.connect();
+		const query = `SELECT * FROM activities WHERE id = $1`;
+		try {
+			const { rows } = await client.query(query, [atividade_id]);
+			return rows[0];
+		} catch (error) {
+			throw new InternalServerException("Erro ao Listar Atividade");
 		} finally {
 			client.release();
 		}

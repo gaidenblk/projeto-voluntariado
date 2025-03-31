@@ -40,9 +40,9 @@ export const activitiesController = {
 	},
 	updateActivity: async (req, res) => {
 		const { titulo, descricao, data, local } = req.body;
-		const id = req.params.atividade_id;
+		const atividade_id = req.params.atividade_id;
 
-		if (isNaN(id)) {
+		if (isNaN(atividade_id)) {
 			errorResponse(res, {
 				error: "BAD_REQUEST",
 				message: "Informe um ID válido da Atividade",
@@ -72,7 +72,7 @@ export const activitiesController = {
 		}
 		try {
 			const updatedActivity = await activitiesServices.updateActivity(
-				id,
+				atividade_id,
 				titulo,
 				descricao,
 				data,

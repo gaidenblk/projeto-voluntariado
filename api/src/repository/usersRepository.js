@@ -46,7 +46,7 @@ export const userRepository = {
 
 	findById: async (usuario_id) => {
 		const client = await pool.connect();
-		const query = `SELECT id, nome, apelido FROM users WHERE id = $1`;
+		const query = `SELECT id, nome, apelido, email, tipo FROM users WHERE id = $1`;
 		try {
 			const { rows } = await client.query(query, [usuario_id]);
 			return rows[0];
@@ -70,7 +70,7 @@ export const userRepository = {
 		}
 	},
 
-	updateUserById: async (id, nome, email, senha, tipo) => {
+	updateUserById: async (usuario_id, nome, email, senha, tipo) => {
 		const client = await pool.connect();
 		const setClause = [];
 		const values = [];
@@ -88,7 +88,7 @@ export const userRepository = {
 			setClause.push(`tipo = $${values.push(tipo)}`);
 		}
 
-		values.push(id);
+		values.push(usuario_id);
 
 		const query = `
           UPDATE users
@@ -105,11 +105,11 @@ export const userRepository = {
 		}
 	},
 
-	delete: async (id) => {
+	delete: async (usuario_id) => {
 		const client = await pool.connect();
 		const query = `DELETE FROM users WHERE id = $1 RETURNING id, nome, apelido ,email`;
 		try {
-			const { rows } = await client.query(query, [id]);
+			const { rows } = await client.query(query, [usuario_id]);
 			return rows[0];
 		} catch (error) {
 			throw new InternalServerException("Erro ao deletar usuário");

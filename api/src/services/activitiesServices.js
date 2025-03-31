@@ -22,7 +22,12 @@ export const activitiesServices = {
 		return await activitiesRepository.create(titulo, descricao, data, local);
 	},
 
-	updateActivity: async (id, titulo, descricao, data, local) => {
+	updateActivity: async (atividade_id, titulo, descricao, data, local) => {
+		const existentActivity = await activitiesRepository.findById(atividade_id);
+		if (!existentActivity) {
+			throw new NotFoundException("Atividade não encontrada!");
+		}
+
 		if (titulo && titulo.length > 50) {
 			throw new BadRequestException("Titulo não pode ser maior que 50 Caracteres");
 		}
@@ -33,7 +38,7 @@ export const activitiesServices = {
 		if (data && new Date(data).getTime() < Date.now()) {
 			throw new BadRequestException("Data precisa ser Maior que a data de Hoje");
 		}
-		return await activitiesRepository.update(id, titulo, descricao, data, local);
+		return await activitiesRepository.update(atividade_id, titulo, descricao, data, local);
 	},
 
 	listAllWithUsers: async () => {
@@ -116,10 +121,11 @@ export const activitiesServices = {
 	},
 
 	delete: async (atividade_id) => {
-		const existentActivity = await activitiesRepository.listAll(atividade_id);
+		const existentActivity = await activitiesRepository.findById(atividade_id);
 		if (!existentActivity) {
 			throw new NotFoundException("Atividade não encontrada!");
 		}
+
 		return await activitiesRepository.delete(atividade_id);
 	},
 };

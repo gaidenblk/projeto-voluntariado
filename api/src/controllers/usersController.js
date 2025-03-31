@@ -83,11 +83,28 @@ export const userController = {
 		}
 	},
 
+	findUserById: async (req, res) => {
+		const usuario_id = req.params.usuario_id;
+		const actualUser = req?.user;
+
+		try {
+			const user = await userServices.findUserById(usuario_id, actualUser);
+
+			res.status(200).json({
+				sucess: true,
+				message: "Usuário Listado com sucesso",
+				data: user,
+			});
+		} catch (error) {
+			errorResponse(res, error);
+		}
+	},
+
 	listUser: async (req, res) => {
 		const actualUser = req?.user;
 
 		try {
-			const user = await userServices.listUser(actualUser);
+			const user = await userServices.listUser(actualUser.id);
 
 			res.status(200).json({
 				sucess: true,
@@ -161,7 +178,7 @@ export const userController = {
 		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
-		if (isNaN(id)) {
+		if (isNaN(usuario_id)) {
 			errorResponse(res, {
 				error: "BAD_REQUEST",
 				message: "Informe um ID válido do usuário",

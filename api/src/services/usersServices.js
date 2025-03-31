@@ -54,8 +54,22 @@ export const userServices = {
 		return await userRepository.updateUserById(id, name, email, hashedPassword, tipo);
 	},
 
-	listUser: async (actualUser) => {
-		const existentUser = await userRepository.findById(actualUser.id);
+	findUserById: async (usuario_id, actualUser) => {
+		const existentUser = await userRepository.findById(usuario_id);
+
+		if (!existentUser) {
+			throw new NotFoundException("Usuário não encontrado!");
+		}
+
+		if (actualUser.id !== existentUser.id && actualUser.tipo !== "admin") {
+			throw new ForbiddenException("Não é possível listar o Coleguinha");
+		}
+
+		return existentUser;
+	},
+
+	listUser: async (usuario_id) => {
+		const existentUser = await userRepository.findById(usuario_id);
 
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
@@ -64,15 +78,17 @@ export const userServices = {
 		return existentUser;
 	},
 
-	deleteUser: async (id, actualUser) => {
-		const existentUser = await userRepository.findById(id);
+	deleteUser: async (usuario_id, actualUser) => {
+		const existentUser = await userRepository.findById(usuario_id);
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
 		}
-		if (actualUser.id !== existentUser.id) {
-			throw new ForbiddenException("Não é possivel deletar o Coleguinha");
+
+		if (actualUser.id !== existentUser.id && actualUser.tipo !== "admin") {
+			throw new ForbiddenException("Não é possível deletar o Coleguinha");
 		}
-		return await userRepository.delete(id);
+
+		return await userRepository.delete(usuario_id);
 	},
 
 	subscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
@@ -119,8 +135,8 @@ export const userServices = {
 	unsubscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
 		const [existentUser, existentActivity, subscribedActivities] = await Promise.all([
 			userRepository.findById(usuario_id),
-			activitiesRepository.listAvailableById(atividade_id),
-			userRepository.listUserActivitiesById(actualUser.id),
+			activitiesRepository.findById(atividade_id),
+			userRepository.listUserActivitiesById(usuario_id),
 		]);
 
 		if (!existentUser) {
