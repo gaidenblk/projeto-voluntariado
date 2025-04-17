@@ -1,34 +1,35 @@
 import { activitiesServices } from "../services/activitiesServices.js";
-import { errorResponse } from "../utils/exceptions.js";
+import { BadRequestException, errorResponse } from "../utils/exceptions.js";
 
 export const activitiesController = {
 	createNewActivity: async (req, res) => {
-		const { titulo, descricao, data, local } = req.body;
+		const { titulo, descricao, data, local, vagas } = req.body;
 
-		if (!titulo || !descricao || !data || !local) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Todos os Campos precisam estar preenchido!",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (isNaN(new Date(data).getTime())) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Insira uma data válida!",
-				statusCode: 400,
-			});
-			return;
-		}
 		try {
+			if (!titulo || !descricao || !data || !local || !vagas) {
+				throw new BadRequestException("Todos os Campos precisam estar preenchidos!");
+			}
+
+			if (isNaN(new Date(data).getTime())) {
+				throw new BadRequestException("Insira uma data válida!");
+			}
+
+			if (isNaN(Number(vagas))) {
+				throw new BadRequestException("Insira um numero de vagas válido!");
+			}
+
+			if (Number(vagas) <= 0) {
+				throw new BadRequestException("Quantidade mínima de vagas é 1!");
+			}
+
 			const newActivity = await activitiesServices.createActivity(
 				titulo,
 				descricao,
 				data,
 				local,
+				vagas,
 			);
+
 			res.status(201).json({
 				sucess: true,
 				message: "Atividade Criada com sucesso!",
@@ -38,46 +39,45 @@ export const activitiesController = {
 			errorResponse(res, error);
 		}
 	},
+
 	updateActivity: async (req, res) => {
-		const { titulo, descricao, data, local } = req.body;
+		const { titulo, descricao, data, local, vagas } = req.body;
 		const atividade_id = req.params.atividade_id;
 
-		if (isNaN(atividade_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido da Atividade",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (!titulo && !descricao && !data && !local) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Pelo menos um Campo precisa estar preenchido!",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (data) {
-			if (isNaN(new Date(data).getTime())) {
-				errorResponse(res, {
-					error: "BAD_REQUEST",
-					message: "Insira uma data válida!",
-					statusCode: 400,
-				});
-				return;
-			}
-		}
 		try {
+			if (isNaN(atividade_id)) {
+				throw new BadRequestException("Informe um ID válido da Atividade");
+			}
+
+			if (!titulo && !descricao && !data && !local) {
+				throw new BadRequestException("Pelo menos um Campo precisa estar preenchido!");
+			}
+
+			if (data) {
+				if (isNaN(new Date(data).getTime())) {
+					throw new BadRequestException("Insira uma data válida!");
+				}
+			}
+
+			if (vagas) {
+				if (isNaN(Number(vagas))) {
+					throw new BadRequestException("Insira um numero de vagas válido!");
+				}
+
+				if (Number(vagas) <= 0) {
+					throw new BadRequestException("Quantidade mínima de vagas é 1!");
+				}
+			}
+
 			const updatedActivity = await activitiesServices.updateActivity(
 				atividade_id,
 				titulo,
 				descricao,
 				data,
 				local,
+				vagas,
 			);
+
 			res.status(200).json({
 				sucess: true,
 				message: "Atividade Atualizada com sucesso!",
@@ -90,6 +90,19 @@ export const activitiesController = {
 
 	listActivities: async (req, res) => {
 		try {
+			const activities = await activitiesServices.listActivities();
+			res.status(200).json({
+				sucess: true,
+				message: "Listagem realizada com sucesso!",
+				data: activities,
+			});
+		} catch (error) {
+			errorResponse(res, error);
+		}
+	},
+
+	listAllWithUsers: async (req, res) => {
+		try {
 			const activities = await activitiesServices.listAllWithUsers();
 			res.status(200).json({
 				sucess: true,
@@ -101,22 +114,9 @@ export const activitiesController = {
 		}
 	},
 
-	listAvailableActivities: async (req, res) => {
+	listUsersWithActivities: async (req, res) => {
 		try {
-			const activities = await activitiesServices.listAvailableActivities();
-			res.status(200).json({
-				sucess: true,
-				message: "Listagem realizada com sucesso!",
-				data: activities,
-			});
-		} catch (error) {
-			errorResponse(res, error);
-		}
-	},
-
-	listAll: async (req, res) => {
-		try {
-			const activities = await activitiesServices.listAllWithActivities();
+			const activities = await activitiesServices.listUsersWithActivities();
 			res.status(200).json({
 				sucess: true,
 				message: "Listagem realizada com sucesso!",
@@ -130,16 +130,11 @@ export const activitiesController = {
 	deleteActivity: async (req, res) => {
 		const atividade_id = req.params.atividade_id;
 
-		if (isNaN(atividade_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido da atividade",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (isNaN(atividade_id)) {
+				throw new BadRequestException("Informe um ID válido da atividade");
+			}
+
 			const deletado = await activitiesServices.delete(atividade_id);
 			res.status(200).json({
 				sucess: true,

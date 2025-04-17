@@ -3,7 +3,7 @@ import { userRepository } from "../repository/usersRepository.js";
 import { BadRequestException, NotFoundException } from "../utils/exceptions.js";
 
 export const activitiesServices = {
-	createActivity: async (titulo, descricao, data, local) => {
+	createActivity: async (titulo, descricao, data, local, vagas) => {
 		const today = new Date(Date.now());
 		today.setHours(0, 0, 0, 0);
 
@@ -18,33 +18,79 @@ export const activitiesServices = {
 		if (local.length > 50) {
 			throw new BadRequestException("Local não pode ser maior que 50 Caracteres");
 		}
+		if (vagas > 25) {
+			throw new BadRequestException("Quantidade de vagas não pode ser maior que 25");
+		}
 
-		return await activitiesRepository.create(titulo, descricao, data, local);
+		return await activitiesRepository.create(titulo, descricao, data, local, vagas);
 	},
 
-	updateActivity: async (atividade_id, titulo, descricao, data, local) => {
-		const existentActivity = await activitiesRepository.findById(atividade_id);
+	updateActivity: async (atividade_id, titulo, descricao, data, local, vagas) => {
+		const [existentActivity, userActivities] = await Promise.all([
+			activitiesRepository.findById(atividade_id),
+			activitiesRepository.listUserActivitiesById(atividade_id),
+		]);
+		const today = new Date(Date.now());
+		today.setHours(0, 0, 0, 0);
+
 		if (!existentActivity) {
 			throw new NotFoundException("Atividade não encontrada!");
 		}
-
 		if (titulo && titulo.length > 50) {
 			throw new BadRequestException("Titulo não pode ser maior que 50 Caracteres");
 		}
 		if (local && local.length > 50) {
 			throw new BadRequestException("Local não pode ser maior que 50 Caracteres");
 		}
-
-		if (data && new Date(data).getTime() < Date.now()) {
+		if (data && new Date(data).getTime() < today) {
 			throw new BadRequestException("Data precisa ser Maior que a data de Hoje");
 		}
-		return await activitiesRepository.update(atividade_id, titulo, descricao, data, local);
+		if (vagas > 25) {
+			throw new BadRequestException("Quantidade de vagas não pode ser maior que 25");
+		}
+		if (vagas < userActivities.length) {
+			throw new BadRequestException(
+				"Quantidade de vagas não pode ser menor que quantidade de Inscritos",
+			);
+		}
+
+		return await activitiesRepository.update(
+			atividade_id,
+			titulo,
+			descricao,
+			data,
+			local,
+			vagas,
+		);
+	},
+
+	listActivities: async () => {
+		const [activities, userActivities] = await Promise.all([
+			activitiesRepository.listAllActivities(),
+			userRepository.listAllUserActivities(),
+		]);
+
+		if (activities.length === 0) {
+			throw new NotFoundException("Não há Atividades!");
+		}
+		const allActivities = activities.map((activity) => {
+			const inscritos = userActivities.filter(
+				(userAct) => userAct.atividade_id === activity.id,
+			);
+
+			return {
+				...activity,
+				inscritos: inscritos.length,
+			};
+		});
+
+		return allActivities;
 	},
 
 	listAllWithUsers: async () => {
 		const [activities, users, userActivities] = await Promise.all([
-			activitiesRepository.listAll(),
-			userRepository.listAll(),
+			activitiesRepository.listAllActivities(),
+			userRepository.listAllUsers(),
 			userRepository.listAllUserActivities(),
 		]);
 
@@ -76,18 +122,10 @@ export const activitiesServices = {
 		return result;
 	},
 
-	listAvailableActivities: async () => {
-		const availableActivities = await activitiesRepository.listAllAvailable();
-		if (availableActivities.length === 0) {
-			throw new NotFoundException("Não há Atividades Disponiveis!");
-		}
-		return availableActivities;
-	},
-
-	listAllWithActivities: async () => {
+	listUsersWithActivities: async () => {
 		const [users, activities, userActivities] = await Promise.all([
-			userRepository.listAll(),
-			activitiesRepository.listAll(),
+			userRepository.listAllUsers(),
+			activitiesRepository.listAllActivities(),
 			userRepository.listAllUserActivities(),
 		]);
 

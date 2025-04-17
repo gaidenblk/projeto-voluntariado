@@ -1,4 +1,4 @@
-import { errorResponse } from "../utils/exceptions.js";
+import { BadRequestException, errorResponse } from "../utils/exceptions.js";
 import { userServices } from "../services/usersServices.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -7,70 +7,39 @@ export const userController = {
 	createNewUser: async (req, res) => {
 		const { nome, apelido, email, senha } = req.body;
 
-		if (!nome) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Nome é obrigatório",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (!apelido) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Apelido é obrigatório",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (apelido === "admin") {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Apelido não pode ser admin, escolha outro...",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (!email) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Email é obrigatório",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (!senha) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Senha é obrigatória",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (!emailRegex.test(email)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Email inválido",
-				statusCode: 400,
-			});
-			return;
-		}
-
-		if (senha.length < 6) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Senha deve ter no mínimo 6 caracteres",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (!nome) {
+				throw new BadRequestException("Nome é obrigatório");
+			}
+
+			if (!apelido) {
+				throw new BadRequestException("Apelido é obrigatório");
+			}
+
+			if (apelido === "admin") {
+				throw new BadRequestException("Apelido não pode ser admin, escolha outro...");
+			}
+
+			if (!email) {
+				throw new BadRequestException("Email é obrigatório");
+			}
+
+			if (email === "admin@email.com") {
+				throw new BadRequestException("Email não pode ser esse, escolha outro...");
+			}
+
+			if (!senha) {
+				throw new BadRequestException("Senha é obrigatória");
+			}
+
+			if (!emailRegex.test(email)) {
+				throw new BadRequestException("Email inválido");
+			}
+
+			if (senha.length < 6) {
+				throw new BadRequestException("Senha deve ter no mínimo 6 caracteres");
+			}
+
 			const newUser = await userServices.createUser(nome, apelido, email, senha);
 
 			res.status(200).json({
@@ -121,40 +90,25 @@ export const userController = {
 		const actualUser = req?.user;
 		const { nome, email, senha, tipo } = req.body;
 
-		if (email) {
-			if (!emailRegex.test(email)) {
-				errorResponse(res, {
-					error: "BAD_REQUEST",
-					message: "Email inválido",
-					statusCode: 400,
-				});
-				return;
-			}
-		}
-
-		if (senha) {
-			if (senha.length < 6) {
-				errorResponse(res, {
-					error: "BAD_REQUEST",
-					message: "Senha deve ter no mínimo 6 caracteres",
-					statusCode: 400,
-				});
-				return;
-			}
-		}
-
-		if (tipo) {
-			if (!["admin", "usuario"].includes(tipo)) {
-				errorResponse(res, {
-					error: "BAD_REQUEST",
-					message: "O tipo deve ser 'admin' ou 'usuario'.",
-					statusCode: 400,
-				});
-				return;
-			}
-		}
-
 		try {
+			if (email) {
+				if (!emailRegex.test(email)) {
+					throw new BadRequestException("Email inválido");
+				}
+			}
+
+			if (senha) {
+				if (senha.length < 6) {
+					throw new BadRequestException("Senha deve ter no mínimo 6 caracteres");
+				}
+			}
+
+			if (tipo) {
+				if (!["admin", "usuario"].includes(tipo)) {
+					throw new BadRequestException("O tipo deve ser 'admin' ou 'usuario'.");
+				}
+			}
+
 			const updatedUser = await userServices.updateUser(
 				usuario_id,
 				nome,
@@ -178,16 +132,11 @@ export const userController = {
 		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
-		if (isNaN(usuario_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido do usuário",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (isNaN(usuario_id)) {
+				throw new BadRequestException("Informe um ID válido do usuário");
+			}
+
 			const deletado = await userServices.deleteUser(usuario_id, actualUser);
 			res.clearCookie("session_id");
 			res.status(200).json({
@@ -205,21 +154,17 @@ export const userController = {
 		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
-		if (isNaN(atividade_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido de Atividade",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (isNaN(atividade_id)) {
+				throw new BadRequestException("Informe um ID válido de Atividade");
+			}
+
 			const subscribe = await userServices.subscribeToActivity(
 				atividade_id,
 				usuario_id,
 				actualUser,
 			);
+
 			res.status(200).json({
 				sucess: true,
 				message: "Usuário Inscrito com sucesso na atividade",
@@ -234,20 +179,16 @@ export const userController = {
 		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
-		if (isNaN(usuario_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido de Usuário",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (isNaN(usuario_id)) {
+				throw new BadRequestException("Informe um ID válido de Usuário");
+			}
+
 			const subscribedList = await userServices.listSubscribedActivities(
 				usuario_id,
 				actualUser,
 			);
+
 			res.status(200).json({
 				sucess: true,
 				message: "Busca realizada com Sucesso!",
@@ -263,21 +204,17 @@ export const userController = {
 		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
 
-		if (isNaN(atividade_id)) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Informe um ID válido de Atividade",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (isNaN(atividade_id)) {
+				throw new BadRequestException("Informe um ID válido de Atividade");
+			}
+
 			const unsubscribe = await userServices.unsubscribeToActivity(
 				atividade_id,
 				usuario_id,
 				actualUser,
 			);
+
 			res.status(200).json({
 				sucess: true,
 				message: "Usuário Removido com sucesso da atividade",

@@ -8,7 +8,7 @@ userRouter.get("/", userController.listUser);
 userRouter.get("/:usuario_id", userController.findUserById);
 userRouter.patch("/:usuario_id/update", userController.updateExistentUser);
 userRouter.delete("/:usuario_id/delete", userController.deleteExistentUser);
-userRouter.get("/activities/list", activitiesController.listAvailableActivities);
+userRouter.get("/activities/list", activitiesController.listActivities);
 userRouter.get("/:usuario_id/activities/list", userController.listSubscribedActivities);
 
 userRouter.post(

@@ -92,21 +92,41 @@ export const userServices = {
 	},
 
 	subscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
-		const [existentUser, existentActivity] = await Promise.all([
+		const [existentUser, existentActivity, userActivity] = await Promise.all([
 			userRepository.findById(usuario_id),
-			activitiesRepository.listAvailableById(atividade_id),
+			activitiesRepository.findById(atividade_id),
+			activitiesRepository.listUserActivitiesById(atividade_id),
 		]);
+		const today = new Date(Date.now());
+		today.setHours(0, 0, 0, 0);
 
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
 		}
 
 		if (!existentActivity) {
-			throw new NotFoundException("Atividade não encontrada ou Indisponível!");
+			throw new NotFoundException("Atividade não encontrada!");
 		}
 
 		if (actualUser.id !== existentUser.id && actualUser.tipo !== "admin") {
 			throw new ForbiddenException("Não é possível inscrever o Coleguinha");
+		}
+
+		// Verifica se o usuário está inscrito exatamente nessa atividade
+		const isSubscribed = userActivity.some(
+			(activity) => activity.usuario_id === Number(usuario_id),
+		);
+
+		if (isSubscribed) {
+			throw new ConflictException("Usuário já está inscrito nesta atividade!");
+		}
+
+		if (existentActivity.vagas <= userActivity.length) {
+			throw new ConflictException("Limite de inscrições atingido para esta atividade!");
+		}
+
+		if (existentActivity.data <= today) {
+			throw new ConflictException("Prazo para inscrição na Atividade já expirou");
 		}
 
 		return await userRepository.subscribeToActivity(existentUser.id, existentActivity.id);
@@ -138,6 +158,8 @@ export const userServices = {
 			activitiesRepository.findById(atividade_id),
 			userRepository.listUserActivitiesById(usuario_id),
 		]);
+		const today = new Date(Date.now());
+		today.setHours(0, 0, 0, 0);
 
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
@@ -158,6 +180,10 @@ export const userServices = {
 
 		if (!isSubscribed) {
 			throw new ConflictException("Usuário não está inscrito nesta atividade!");
+		}
+
+		if (existentActivity.data <= today) {
+			throw new ConflictException("Prazo para desinscrever da Atividade já expirou");
 		}
 
 		return await userRepository.unsubscribeToActivity(existentUser.id, existentActivity.id);

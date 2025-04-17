@@ -1,20 +1,15 @@
-import { errorResponse } from "../utils/exceptions.js";
+import { BadRequestException, errorResponse, NotFoundException } from "../utils/exceptions.js";
 import { authServices } from "../services/authServices.js";
 
 export const authController = {
 	authenticate: async (req, res) => {
 		const { email, senha } = req.body;
 
-		if (!req.body.email || !req.body.senha) {
-			errorResponse(res, {
-				error: "BAD_REQUEST",
-				message: "Email e senha são obrigatórios",
-				statusCode: 400,
-			});
-			return;
-		}
-
 		try {
+			if (!req.body.email || !req.body.senha) {
+				throw new BadRequestException("Email e senha são obrigatórios");
+			}
+
 			const { auth, token, user } = await authServices.authenticateUser(email, senha);
 
 			res.cookie("session_id", token, {
@@ -42,15 +37,12 @@ export const authController = {
 
 	validateToken: async (req, res) => {
 		const token = req.cookies?.session_id;
-		if (!token) {
-			errorResponse(res, {
-				error: "NOT_FOUND",
-				message: "Token não encontrado!",
-				statusCode: 404,
-			});
-			return;
-		}
+
 		try {
+			if (!token) {
+				throw new NotFoundException("Token não encontrado!");
+			}
+
 			const decoded = await authServices.validateUser(token);
 
 			res.status(200).json({
@@ -59,14 +51,8 @@ export const authController = {
 				success: true,
 				message: "Token valido!",
 			});
-			return;
 		} catch (error) {
-			errorResponse(res, {
-				error: "NOT_FOUND",
-				message: "Token inválido!",
-				statusCode: 401,
-			});
-			return;
+			errorResponse(res, error);
 		}
 	},
 };

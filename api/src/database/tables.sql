@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS activities (
     descricao TEXT NOT NULL,
     data TIMESTAMP NOT NULL,
     local VARCHAR(255) NOT NULL,
+    vagas INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

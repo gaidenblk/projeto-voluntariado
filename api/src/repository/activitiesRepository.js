@@ -2,14 +2,14 @@ import pool from "../database/index.js";
 import { InternalServerException } from "../utils/exceptions.js";
 
 export const activitiesRepository = {
-	create: async (titulo, descricao, data, local) => {
+	create: async (titulo, descricao, data, local, vagas) => {
 		const client = await pool.connect();
 		const query = `INSERT INTO activities (
-		titulo, descricao, data, local)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, titulo, descricao, data, local`;
+		titulo, descricao, data, local, vagas)
+		VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, titulo, descricao, data, local, vagas`;
 		try {
-			const { rows } = await client.query(query, [titulo, descricao, data, local]);
+			const { rows } = await client.query(query, [titulo, descricao, data, local, vagas]);
 			return rows[0];
 		} catch (error) {
 			throw new InternalServerException("Erro ao criar Atividade");
@@ -18,7 +18,7 @@ export const activitiesRepository = {
 		}
 	},
 
-	update: async (atividade_id, titulo, descricao, data, local) => {
+	update: async (atividade_id, titulo, descricao, data, local, vagas) => {
 		const client = await pool.connect();
 		const setClause = [];
 		const values = [];
@@ -35,6 +35,9 @@ export const activitiesRepository = {
 		if (local) {
 			setClause.push(`local = $${values.push(local)}`);
 		}
+		if (vagas) {
+			setClause.push(`vagas = $${values.push(vagas)}`);
+		}
 
 		values.push(atividade_id);
 
@@ -42,7 +45,7 @@ export const activitiesRepository = {
           UPDATE activities
           SET ${setClause.join(", ")}
           WHERE id = $${values.length}
-          RETURNING id, titulo, descricao, data, local`;
+          RETURNING id, titulo, descricao, data, local, vagas`;
 		try {
 			const { rows } = await client.query(query, values);
 			return rows[0];
@@ -55,72 +58,25 @@ export const activitiesRepository = {
 
 	findById: async (atividade_id) => {
 		const client = await pool.connect();
-		const query = `SELECT * FROM activities WHERE id = $1`;
-		try {
-			const { rows } = await client.query(query, [atividade_id]);
-			return rows[0];
-		} catch (error) {
-			throw new InternalServerException("Erro ao Listar Atividade");
-		} finally {
-			client.release();
-		}
-	},
-
-	listAll: async () => {
-		const client = await pool.connect();
-		const query = `SELECT * FROM activities`;
-		try {
-			const { rows } = await client.query(query);
-			return rows;
-		} catch (error) {
-			throw new InternalServerException("Erro ao Listar Todas as Atividades");
-		} finally {
-			client.release();
-		}
-	},
-
-	listAllAvailable: async () => {
-		const client = await pool.connect();
-		const query = `
-        SELECT a.*
-        FROM activities a
-        LEFT JOIN (
-            SELECT atividade_id, COUNT(usuario_id) AS inscritos
-            FROM user_activity
-            GROUP BY atividade_id
-        ) ua ON a.id = ua.atividade_id
-        WHERE a.data > CURRENT_DATE
-        AND COALESCE(ua.inscritos, 0) < 10;
-    `;
-		try {
-			const { rows } = await client.query(query);
-			return rows;
-		} catch (error) {
-			throw new InternalServerException("Erro ao Listar Atividades");
-		} finally {
-			client.release();
-		}
-	},
-
-	listAvailableById: async (atividade_id) => {
-		const client = await pool.connect();
-		const query = `
-        SELECT a.*
-        FROM activities a
-        LEFT JOIN (
-            SELECT atividade_id, COUNT(usuario_id) AS inscritos
-            FROM user_activity
-            GROUP BY atividade_id
-        ) ua ON a.id = ua.atividade_id
-        WHERE a.id = $1
-        AND a.data > CURRENT_DATE
-        AND COALESCE(ua.inscritos, 0) < 10;
-    `;
+		const query = `SELECT id, titulo, descricao, data, local, vagas FROM activities WHERE id = $1;`;
 		try {
 			const { rows } = await client.query(query, [atividade_id]);
 			return rows[0] || null;
 		} catch (error) {
 			throw new InternalServerException("Erro ao Listar Atividade");
+		} finally {
+			client.release();
+		}
+	},
+
+	listAllActivities: async () => {
+		const client = await pool.connect();
+		const query = `SELECT id, titulo, descricao, data, local, vagas FROM activities`;
+		try {
+			const { rows } = await client.query(query);
+			return rows;
+		} catch (error) {
+			throw new InternalServerException("Erro ao Listar Todas as Atividades");
 		} finally {
 			client.release();
 		}
@@ -134,6 +90,19 @@ export const activitiesRepository = {
 			return rows[0];
 		} catch (error) {
 			throw new InternalServerException("Erro ao deletar atividade!");
+		} finally {
+			client.release();
+		}
+	},
+
+	listUserActivitiesById: async (atividade_id) => {
+		const client = await pool.connect();
+		const query = `SELECT * FROM user_activity WHERE atividade_id = $1`;
+		try {
+			const { rows } = await client.query(query, [atividade_id]);
+			return rows;
+		} catch (error) {
+			throw new InternalServerException("Erro ao Listar Atividades com Inscritos");
 		} finally {
 			client.release();
 		}

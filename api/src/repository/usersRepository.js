@@ -57,7 +57,7 @@ export const userRepository = {
 		}
 	},
 
-	listAll: async () => {
+	listAllUsers: async () => {
 		const client = await pool.connect();
 		const query = `SELECT id, nome, apelido, email FROM users`;
 		try {
@@ -126,10 +126,6 @@ export const userRepository = {
 			const { rows } = await client.query(query, [atividade_id, usuario_id]);
 			return rows[0];
 		} catch (error) {
-			if (error.code === "23505") {
-				// Código do PostgreSQL para violação de chave única
-				throw new ConflictException("Usuário já está inscrito nesta atividade!");
-			}
 			throw new InternalServerException("Erro ao inscrever usuário na atividade.");
 		} finally {
 			client.release();
