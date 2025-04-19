@@ -53,8 +53,8 @@ export const userController = {
 	},
 
 	findUserById: async (req, res) => {
-		const usuario_id = req.params.usuario_id;
 		const actualUser = req?.user;
+		const usuario_id = req.params.usuario_id;
 
 		try {
 			const user = await userServices.findUserById(usuario_id, actualUser);
@@ -169,30 +169,6 @@ export const userController = {
 				sucess: true,
 				message: "Usuário Inscrito com sucesso na atividade",
 				data: subscribe,
-			});
-		} catch (error) {
-			errorResponse(res, error);
-		}
-	},
-
-	listSubscribedActivities: async (req, res) => {
-		const usuario_id = req.params.usuario_id;
-		const actualUser = req?.user;
-
-		try {
-			if (isNaN(usuario_id)) {
-				throw new BadRequestException("Informe um ID válido de Usuário");
-			}
-
-			const subscribedList = await userServices.listSubscribedActivities(
-				usuario_id,
-				actualUser,
-			);
-
-			res.status(200).json({
-				sucess: true,
-				message: "Busca realizada com Sucesso!",
-				data: subscribedList,
 			});
 		} catch (error) {
 			errorResponse(res, error);

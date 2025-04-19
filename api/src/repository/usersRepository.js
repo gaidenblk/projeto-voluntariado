@@ -150,7 +150,7 @@ export const userRepository = {
 	listSubscribedActivities: async (usuario_id) => {
 		const client = await pool.connect();
 		const query = `
-        SELECT a.id, a.titulo, a.descricao, a.data, a.local, a.created_at
+        SELECT a.id, a.titulo, a.descricao, a.data, a.local
         FROM user_activity ua
         JOIN activities a ON ua.atividade_id = a.id
         WHERE ua.usuario_id = $1

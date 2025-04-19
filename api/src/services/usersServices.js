@@ -55,7 +55,10 @@ export const userServices = {
 	},
 
 	findUserById: async (usuario_id, actualUser) => {
-		const existentUser = await userRepository.findById(usuario_id);
+		const [existentUser, subscribedActivities] = await Promise.all([
+			userRepository.findById(usuario_id),
+			userRepository.listSubscribedActivities(usuario_id),
+		]);
 
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
@@ -65,17 +68,26 @@ export const userServices = {
 			throw new ForbiddenException("Não é possível listar o Coleguinha");
 		}
 
-		return existentUser;
+		return {
+			...existentUser,
+			atividades: subscribedActivities,
+		};
 	},
 
 	listUser: async (usuario_id) => {
-		const existentUser = await userRepository.findById(usuario_id);
+		const [existentUser, subscribedActivities] = await Promise.all([
+			userRepository.findById(usuario_id),
+			userRepository.listSubscribedActivities(usuario_id),
+		]);
 
 		if (!existentUser) {
 			throw new NotFoundException("Usuário não encontrado!");
 		}
 
-		return existentUser;
+		return {
+			...existentUser,
+			atividades: subscribedActivities,
+		};
 	},
 
 	deleteUser: async (usuario_id, actualUser) => {
@@ -147,8 +159,7 @@ export const userServices = {
 
 		return {
 			...existentUser,
-			atividades:
-				subscribedActivities.length > 0 ? subscribedActivities : "Não há atividades inscritas",
+			atividades: subscribedActivities,
 		};
 	},
 
