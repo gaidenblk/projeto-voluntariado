@@ -64,29 +64,6 @@ export const activitiesServices = {
 		);
 	},
 
-	listActivities: async () => {
-		const [activities, userActivities] = await Promise.all([
-			activitiesRepository.listAllActivities(),
-			userRepository.listAllUserActivities(),
-		]);
-
-		if (activities.length === 0) {
-			throw new NotFoundException("Não há Atividades!");
-		}
-		const allActivities = activities.map((activity) => {
-			const inscritos = userActivities.filter(
-				(userAct) => userAct.atividade_id === activity.id,
-			);
-
-			return {
-				...activity,
-				inscritos: inscritos.length,
-			};
-		});
-
-		return allActivities;
-	},
-
 	listAllWithUsers: async () => {
 		const [activities, users, userActivities] = await Promise.all([
 			activitiesRepository.listAllActivities(),

@@ -149,6 +149,19 @@ export const userController = {
 		}
 	},
 
+	listActivities: async (req, res) => {
+		try {
+			const activities = await userServices.listActivities();
+			res.status(200).json({
+				sucess: true,
+				message: "Listagem realizada com sucesso!",
+				data: activities,
+			});
+		} catch (error) {
+			errorResponse(res, error);
+		}
+	},
+
 	subscribeToActivity: async (req, res) => {
 		const atividade_id = req.params.atividade_id;
 		const usuario_id = req.params.usuario_id;

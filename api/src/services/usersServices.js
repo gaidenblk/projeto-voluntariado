@@ -144,6 +144,29 @@ export const userServices = {
 		return await userRepository.subscribeToActivity(existentUser.id, existentActivity.id);
 	},
 
+	listActivities: async () => {
+		const [activities, userActivities] = await Promise.all([
+			activitiesRepository.listAllActivities(),
+			userRepository.listAllUserActivities(),
+		]);
+
+		if (activities.length === 0) {
+			throw new NotFoundException("Não há Atividades!");
+		}
+		const allActivities = activities.map((activity) => {
+			const inscritos = userActivities.filter(
+				(userAct) => userAct.atividade_id === activity.id,
+			);
+
+			return {
+				...activity,
+				inscritos: inscritos.length,
+			};
+		});
+
+		return allActivities;
+	},
+
 	listSubscribedActivities: async (usuario_id, actualUser) => {
 		const existentUser = await userRepository.findById(usuario_id);
 

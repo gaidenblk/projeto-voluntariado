@@ -88,19 +88,6 @@ export const activitiesController = {
 		}
 	},
 
-	listActivities: async (req, res) => {
-		try {
-			const activities = await activitiesServices.listActivities();
-			res.status(200).json({
-				sucess: true,
-				message: "Listagem realizada com sucesso!",
-				data: activities,
-			});
-		} catch (error) {
-			errorResponse(res, error);
-		}
-	},
-
 	listAllWithUsers: async (req, res) => {
 		try {
 			const activities = await activitiesServices.listAllWithUsers();
