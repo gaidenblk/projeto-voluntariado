@@ -69,14 +69,45 @@ export const activitiesRepository = {
 		}
 	},
 
-	listAllActivities: async () => {
+	listAllActivities: async (page = 1, perPage = 10) => {
 		const client = await pool.connect();
-		const query = `SELECT id, titulo, descricao, data, local, vagas FROM activities`;
+		const offset = (page - 1) * perPage;
+
+		const query = `
+			SELECT
+				a.id,
+				a.titulo,
+				a.descricao,
+				a.data,
+				a.local,
+				a.vagas,
+				COUNT(ua.usuario_id) AS inscritos
+			FROM activities a
+			LEFT JOIN user_activity ua ON a.id = ua.atividade_id
+			GROUP BY a.id
+			ORDER BY a.data DESC
+			LIMIT $1 OFFSET $2
+		`;
+
+		const queryCount = `SELECT COUNT(*) AS total FROM activities`;
+
 		try {
-			const { rows } = await client.query(query);
-			return rows;
+			const [dataResult, countResult] = await Promise.all([
+				client.query(query, [perPage, offset]),
+				client.query(queryCount),
+			]);
+
+			return {
+				total: parseInt(countResult.rows[0].total, 10),
+				pagina: parseInt(page),
+				porPagina: parseInt(perPage),
+				atividades: dataResult.rows.map((a) => ({
+					...a,
+					inscritos: parseInt(a.inscritos, 10),
+				})),
+			};
 		} catch (error) {
-			throw new InternalServerException("Erro ao Listar Todas as Atividades");
+			throw new InternalServerException("Erro ao listar atividades com contagem de inscritos");
 		} finally {
 			client.release();
 		}

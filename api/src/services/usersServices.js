@@ -144,27 +144,15 @@ export const userServices = {
 		return await userRepository.subscribeToActivity(existentUser.id, existentActivity.id);
 	},
 
-	listActivities: async () => {
-		const [activities, userActivities] = await Promise.all([
-			activitiesRepository.listAllActivities(),
-			userRepository.listAllUserActivities(),
-		]);
+	listActivities: async (page, limit) => {
+		//receber queryparams do controller
+		const activities = await activitiesRepository.listAllActivities(page, limit);
 
-		if (activities.length === 0) {
+		if (activities.total === 0) {
 			throw new NotFoundException("Não há Atividades!");
 		}
-		const allActivities = activities.map((activity) => {
-			const inscritos = userActivities.filter(
-				(userAct) => userAct.atividade_id === activity.id,
-			);
 
-			return {
-				...activity,
-				inscritos: inscritos.length,
-			};
-		});
-
-		return allActivities;
+		return activities;
 	},
 
 	listSubscribedActivities: async (usuario_id, actualUser) => {

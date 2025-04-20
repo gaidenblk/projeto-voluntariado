@@ -150,8 +150,9 @@ export const userController = {
 	},
 
 	listActivities: async (req, res) => {
+		const { page, limit } = req.query;
 		try {
-			const activities = await userServices.listActivities();
+			const activities = await userServices.listActivities(page, limit);
 			res.status(200).json({
 				sucess: true,
 				message: "Listagem realizada com sucesso!",
@@ -163,8 +164,7 @@ export const userController = {
 	},
 
 	subscribeToActivity: async (req, res) => {
-		const atividade_id = req.params.atividade_id;
-		const usuario_id = req.params.usuario_id;
+		const { atividade_id, usuario_id } = req.params;
 		const actualUser = req?.user;
 
 		try {
@@ -189,8 +189,7 @@ export const userController = {
 	},
 
 	unsubscribeActivity: async (req, res) => {
-		const atividade_id = req.params.atividade_id;
-		const usuario_id = req.params.usuario_id;
+		const { atividade_id, usuario_id } = req.params;
 		const actualUser = req?.user;
 
 		try {
