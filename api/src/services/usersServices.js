@@ -70,6 +70,7 @@ export const userServices = {
 
 		return {
 			...existentUser,
+			total_atividades: subscribedActivities.length,
 			atividades: subscribedActivities,
 		};
 	},
@@ -86,6 +87,7 @@ export const userServices = {
 
 		return {
 			...existentUser,
+			total_atividades: subscribedActivities.length,
 			atividades: subscribedActivities,
 		};
 	},
@@ -101,6 +103,16 @@ export const userServices = {
 		}
 
 		return await userRepository.delete(usuario_id);
+	},
+
+	listActivities: async (page, limit) => {
+		const activities = await activitiesRepository.listAllActivities(page, limit);
+
+		if (activities.total === 0) {
+			throw new NotFoundException("Não há Atividades!");
+		}
+
+		return activities;
 	},
 
 	subscribeToActivity: async (atividade_id, usuario_id, actualUser) => {
@@ -142,36 +154,6 @@ export const userServices = {
 		}
 
 		return await userRepository.subscribeToActivity(existentUser.id, existentActivity.id);
-	},
-
-	listActivities: async (page, limit) => {
-		//receber queryparams do controller
-		const activities = await activitiesRepository.listAllActivities(page, limit);
-
-		if (activities.total === 0) {
-			throw new NotFoundException("Não há Atividades!");
-		}
-
-		return activities;
-	},
-
-	listSubscribedActivities: async (usuario_id, actualUser) => {
-		const existentUser = await userRepository.findById(usuario_id);
-
-		if (!existentUser) {
-			throw new NotFoundException("Usuário não encontrado!");
-		}
-
-		if (actualUser.id !== existentUser.id && actualUser.tipo !== "admin") {
-			throw new ForbiddenException("Não é possível listar o Coleguinha");
-		}
-
-		const subscribedActivities = await userRepository.listSubscribedActivities(usuario_id);
-
-		return {
-			...existentUser,
-			atividades: subscribedActivities,
-		};
 	},
 
 	unsubscribeToActivity: async (atividade_id, usuario_id, actualUser) => {

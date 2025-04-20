@@ -120,7 +120,8 @@ export const userRepository = {
 
 	subscribeToActivity: async (usuario_id, atividade_id) => {
 		const client = await pool.connect();
-		const query = `INSERT INTO user_activity (atividade_id, usuario_id) VALUES ($1, $2) RETURNING *`;
+		const query = `INSERT INTO user_activity (atividade_id, usuario_id)
+		VALUES ($1, $2) RETURNING usuario_id, atividade_id`;
 
 		try {
 			const { rows } = await client.query(query, [atividade_id, usuario_id]);
@@ -134,7 +135,8 @@ export const userRepository = {
 
 	unsubscribeToActivity: async (usuario_id, atividade_id) => {
 		const client = await pool.connect();
-		const query = `DELETE FROM user_activity WHERE usuario_id = $1 AND atividade_id = $2 RETURNING *`;
+		const query = `DELETE FROM user_activity WHERE usuario_id = $1 AND atividade_id = $2
+		RETURNING usuario_id, atividade_id`;
 
 		try {
 			const { rows } = await client.query(query, [usuario_id, atividade_id]);

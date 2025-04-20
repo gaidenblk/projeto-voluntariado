@@ -89,8 +89,10 @@ export const activitiesController = {
 	},
 
 	listAllWithUsers: async (req, res) => {
+		const { page, limit } = req.query;
+
 		try {
-			const activities = await activitiesServices.listAllWithUsers();
+			const activities = await activitiesServices.listAllWithUsers(page, limit);
 			res.status(200).json({
 				sucess: true,
 				message: "Listagem realizada com sucesso!",
@@ -102,8 +104,9 @@ export const activitiesController = {
 	},
 
 	listUsersWithActivities: async (req, res) => {
+		const { page, limit } = req.query;
 		try {
-			const activities = await activitiesServices.listUsersWithActivities();
+			const activities = await activitiesServices.listUsersWithActivities(page, limit);
 			res.status(200).json({
 				sucess: true,
 				message: "Listagem realizada com sucesso!",

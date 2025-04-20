@@ -64,75 +64,22 @@ export const activitiesServices = {
 		);
 	},
 
-	listAllWithUsers: async () => {
-		const [activities, users, userActivities] = await Promise.all([
-			activitiesRepository.listAllActivities(),
-			userRepository.listAllUsers(),
-			userRepository.listAllUserActivities(),
-		]);
+	listAllWithUsers: async (page, limit) => {
+		const activities = await activitiesRepository.listAllWithUsers(page, limit);
 
-		// Para cada atividade, adicionar um campo 'inscritos' com a lista de usuários inscritos
-		const result = activities.map((activity) => {
-			// Buscar os usuários inscritos na atividade com base na lista de user_activity
-			const userActivitiesForActivity = userActivities.filter(
-				(ua) => ua.atividade_id === activity.id,
-			);
-
-			// Montar a lista de usuários inscritos
-			const usersForActivity = userActivitiesForActivity.map((ua) => {
-				const user = users.find((u) => u.id === ua.usuario_id);
-				return {
-					id: user.id,
-					nome: user.nome,
-					apelido: user.apelido,
-					email: user.email,
-				};
-			});
-
-			// Retornar a atividade com os usuários inscritos
-			return {
-				...activity,
-				inscritos: usersForActivity.length > 0 ? usersForActivity : "Nenhum inscrito",
-			};
-		});
-
-		return result;
+		if (activities.total === 0) {
+			throw new NotFoundException("Não há Atividades!");
+		}
+		return activities;
 	},
 
-	listUsersWithActivities: async () => {
-		const [users, activities, userActivities] = await Promise.all([
-			userRepository.listAllUsers(),
-			activitiesRepository.listAllActivities(),
-			userRepository.listAllUserActivities(),
-		]);
+	listUsersWithActivities: async (page, limit) => {
+		const users = await activitiesRepository.listUsersWithActivities(page, limit);
 
-		// Para cada usuário, adicionar um campo 'atividades' com as atividades inscritas
-		const result = users.map((user) => {
-			// Buscar as atividades do usuário com base na lista de user_activity
-			const userActivitiesForUser = userActivities.filter((ua) => ua.usuario_id === user.id);
-
-			// Montar as atividades desse usuário, mapeando para os dados da atividade
-			const activitiesForUser = userActivitiesForUser.map((ua) => {
-				const activity = activities.find((a) => a.id === ua.atividade_id);
-				return {
-					id: activity.id,
-					titulo: activity.titulo,
-					descricao: activity.descricao,
-					data: activity.data,
-					local: activity.local,
-					created_at: activity.created_at,
-				};
-			});
-
-			// Retornar o usuário com as atividades
-			return {
-				...user,
-				atividades:
-					activitiesForUser.length > 0 ? activitiesForUser : "Não há atividades inscritas",
-			};
-		});
-
-		return result;
+		if (users.total === 0) {
+			throw new NotFoundException("Não há Usuários");
+		}
+		return users;
 	},
 
 	delete: async (atividade_id) => {
