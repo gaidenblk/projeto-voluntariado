@@ -2,7 +2,11 @@ import pg from "pg";
 import config from "../config/index.js";
 
 const pool = new pg.Pool({
-	connectionString: config.DATABASE_URL,
+	user: config.POSTGRES_USER,
+	password: config.POSTGRES_PASSWORD,
+	host: config.HOST,
+	port: config.DB_PORT,
+	database: config.POSTGRES_DB,
 });
 
 async function testConnection() {

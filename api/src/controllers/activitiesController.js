@@ -31,7 +31,7 @@ export const activitiesController = {
 			);
 
 			res.status(201).json({
-				sucess: true,
+				success: true,
 				message: "Atividade Criada com sucesso!",
 				data: newActivity,
 			});
@@ -79,7 +79,7 @@ export const activitiesController = {
 			);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Atividade Atualizada com sucesso!",
 				data: updatedActivity,
 			});
@@ -94,7 +94,7 @@ export const activitiesController = {
 		try {
 			const activities = await activitiesServices.listAllWithUsers(page, limit);
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Listagem realizada com sucesso!",
 				data: activities,
 			});
@@ -108,7 +108,7 @@ export const activitiesController = {
 		try {
 			const activities = await activitiesServices.listUsersWithActivities(page, limit);
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Listagem realizada com sucesso!",
 				data: activities,
 			});
@@ -127,7 +127,7 @@ export const activitiesController = {
 
 			const deletado = await activitiesServices.delete(atividade_id);
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Atividade Deletada com sucesso",
 				data: deletado,
 			});

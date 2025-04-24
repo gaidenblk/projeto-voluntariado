@@ -11,24 +11,18 @@ import {
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const authServices = {
-	getUser: async (email) => {
-		if (!emailRegex.test(email)) {
-			throw new BadRequestException("Email inválido");
+	authenticateUser: async (acesso, senha) => {
+		let user;
+		if (!emailRegex.test(acesso)) {
+			user = await userRepository.findByUsername(acesso);
+		} else {
+			user = await userRepository.findByEmail(acesso);
 		}
-		const user = await userRepository.findByEmail(email);
-
-		if (!user) throw new NotFoundException("Usuário não encontrado");
-
-		return user;
-	},
-
-	authenticateUser: async (email, senha) => {
-		const user = await userRepository.findByEmail(email);
 
 		if (!user) {
 			throw new NotFoundException("Usuário não encontrado");
 		}
-		if (!(await comparePassword(senha, user?.senha))) {
+		if (!(await comparePassword(senha, user.senha))) {
 			throw new BadRequestException("Senha Incorreta!");
 		}
 
@@ -43,7 +37,7 @@ export const authServices = {
 			return {
 				auth: true,
 				token: token,
-				user: { id: user.id, email: user.email },
+				user: { id: user.id, email: user.email, apelido: user.apelido, tipo: user.tipo },
 			};
 		} catch (error) {
 			throw new InternalServerException("Erro ao Autenticar Usuário");

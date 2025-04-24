@@ -43,7 +43,7 @@ export const userController = {
 			const newUser = await userServices.createUser(nome, apelido, email, senha);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário criado com sucesso",
 				data: newUser,
 			});
@@ -60,7 +60,7 @@ export const userController = {
 			const user = await userServices.findUserById(usuario_id, actualUser);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Listado com sucesso",
 				data: user,
 			});
@@ -76,7 +76,7 @@ export const userController = {
 			const user = await userServices.listUser(actualUser.id);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Listado com sucesso",
 				data: user,
 			});
@@ -119,7 +119,7 @@ export const userController = {
 			);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Atualizado com sucesso",
 				data: updatedUser,
 			});
@@ -140,7 +140,7 @@ export const userController = {
 			const deletado = await userServices.deleteUser(usuario_id, actualUser);
 			res.clearCookie("session_id");
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Deletado com sucesso",
 				data: deletado,
 			});
@@ -154,7 +154,7 @@ export const userController = {
 		try {
 			const activities = await userServices.listActivities(page, limit);
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Listagem realizada com sucesso!",
 				data: activities,
 			});
@@ -179,7 +179,7 @@ export const userController = {
 			);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Inscrito com sucesso na atividade",
 				data: subscribe,
 			});
@@ -204,7 +204,7 @@ export const userController = {
 			);
 
 			res.status(200).json({
-				sucess: true,
+				success: true,
 				message: "Usuário Removido com sucesso da atividade",
 				data: unsubscribe,
 			});

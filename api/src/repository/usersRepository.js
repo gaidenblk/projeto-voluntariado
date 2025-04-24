@@ -33,7 +33,7 @@ export const userRepository = {
 
 	findByUsername: async (apelido) => {
 		const client = await pool.connect();
-		const query = `SELECT id, nome, email FROM users WHERE apelido = $1`;
+		const query = `SELECT id, nome, apelido, email, tipo, senha FROM users WHERE apelido = $1`;
 		try {
 			const { rows } = await client.query(query, [apelido]);
 			return rows[0];
