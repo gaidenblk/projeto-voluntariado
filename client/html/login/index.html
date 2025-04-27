@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vombora!</title>
+  </head>
+  <body>
+    <nav>
+      <div><a href="../">Voltar ao Inicio</a></div>
+      <div>Ainda não possui uma Conta? <a href="../register/">Cadastre-se!</a></div>
+    </nav>
+    <h1>Login</h1>
+    <form action="login" method="post">
+      <label for="acesso">Acesso:</label>
+      <input type="text" name="acesso" placeholder="Email ou Apelido" required>
+      <label for="senha">Senha:</label>
+      <input type="password" name="senha" required>
+      <input type="submit" value="Entrar">
+    </form>
+
+    <script>
+      document.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const acesso = document.getElementsByName("acesso")[0].value;
+        const senha = document.getElementsByName("senha")[0].value;
+
+        const data = {
+          acesso: acesso,
+          senha: senha
+        };
+
+        console.log(data)
+
+        fetch("/api/auth/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        })
+          .then(response => {
+            if (!response.ok) {
+              return response.json().then(err => {
+                throw new Error(err.message || `Erro ${response.status}`);
+              });
+            }
+            return response.json();
+          })
+          .then(result => {
+            console.log("Login bem-sucedido:", result.user);
+            alert(result.message);
+          })
+          .catch(error => {
+            console.error("Erro ao fazer login:", error.message);
+            alert("Erro ao fazer login: " + error.message);
+          });
+      });
+    </script>
+  </body>
+</html>

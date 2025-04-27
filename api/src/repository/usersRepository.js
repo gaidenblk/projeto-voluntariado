@@ -1,5 +1,5 @@
 import pool from "../database/index.js";
-import { ConflictException, InternalServerException } from "../utils/exceptions.js";
+import { InternalServerException } from "../utils/exceptions.js";
 
 export const userRepository = {
 	create: async (nome, apelido, email, senha) => {

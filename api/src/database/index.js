@@ -4,7 +4,7 @@ import config from "../config/index.js";
 const pool = new pg.Pool({
 	user: config.POSTGRES_USER,
 	password: config.POSTGRES_PASSWORD,
-	host: config.HOST,
+	host: config.DB_HOST,
 	port: config.DB_PORT,
 	database: config.POSTGRES_DB,
 });

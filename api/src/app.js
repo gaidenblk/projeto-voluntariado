@@ -2,6 +2,7 @@ import express from "express";
 import config from "./config/index.js";
 import cookieParser from "cookie-parser";
 import { routes } from "./routes/index.js";
+import cors from "cors";
 
 const app = express();
 
@@ -10,6 +11,7 @@ const HOST = config.HOST;
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({ origin: true }));
 
 app.use("/api", routes);
 

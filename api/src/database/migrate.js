@@ -7,7 +7,11 @@ import config from "../config/index.js";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const client = new pg.Client({
-	connectionString: config.DATABASE_URL,
+	user: config.POSTGRES_USER,
+	password: config.POSTGRES_PASSWORD,
+	host: config.DB_HOST,
+	port: config.DB_PORT,
+	database: config.POSTGRES_DB,
 });
 
 async function runMigrations() {
