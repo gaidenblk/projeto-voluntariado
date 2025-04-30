@@ -151,8 +151,9 @@ export const userController = {
 
 	listActivities: async (req, res) => {
 		const { page, limit } = req.query;
+		const actualUser = req?.user.id;
 		try {
-			const activities = await userServices.listActivities(page, limit);
+			const activities = await userServices.listActivities(page, limit, actualUser);
 			res.status(200).json({
 				success: true,
 				message: "Listagem realizada com sucesso!",

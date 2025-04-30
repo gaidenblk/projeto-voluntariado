@@ -105,8 +105,8 @@ export const userServices = {
 		return await userRepository.delete(usuario_id);
 	},
 
-	listActivities: async (page, limit) => {
-		const activities = await activitiesRepository.listAllActivities(page, limit);
+	listActivities: async (page, limit, usuario_id) => {
+		const activities = await activitiesRepository.listAllActivities(page, limit, usuario_id);
 
 		if (activities.total === 0) {
 			throw new NotFoundException("Não há Atividades!");

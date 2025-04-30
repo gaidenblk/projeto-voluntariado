@@ -83,10 +83,9 @@ export const activitiesRepository = {
 		}
 	},
 
-	listAllActivities: async (page = 1, perPage = 10) => {
+	listAllActivities: async (page = 1, perPage = 10, usuario_id) => {
 		const client = await pool.connect();
 		const offset = (page - 1) * perPage;
-
 		const query = `
 			SELECT
 				a.id,
@@ -95,7 +94,11 @@ export const activitiesRepository = {
 				a.data,
 				a.local,
 				a.vagas,
-				COUNT(ua.usuario_id) AS total_inscritos
+				COUNT(ua.usuario_id) AS total_inscritos,
+				EXISTS (
+					SELECT 1 FROM user_activity
+					WHERE usuario_id = $3 AND atividade_id = a.id
+				) AS inscrito
 			FROM activities a
 			LEFT JOIN user_activity ua ON a.id = ua.atividade_id
 			GROUP BY a.id
@@ -107,7 +110,7 @@ export const activitiesRepository = {
 
 		try {
 			const [dataResult, countResult] = await Promise.all([
-				client.query(query, [perPage, offset]),
+				client.query(query, [perPage, offset, usuario_id]),
 				client.query(queryCount),
 			]);
 
@@ -118,6 +121,7 @@ export const activitiesRepository = {
 				atividades: dataResult.rows.map((a) => ({
 					...a,
 					total_inscritos: parseInt(a.total_inscritos, 10),
+					inscrito: a.inscrito,
 				})),
 			};
 		} catch (error) {
