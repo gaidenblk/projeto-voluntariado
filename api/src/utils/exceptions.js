@@ -51,3 +51,9 @@ export class ForbiddenException extends Exception {
 		super(message, 403, "FORBIDDEN");
 	}
 }
+
+export class TooManyRequestsException extends Exception {
+	constructor(message) {
+		super(message, 429, "TOO_MANY_REQUESTS");
+	}
+}
