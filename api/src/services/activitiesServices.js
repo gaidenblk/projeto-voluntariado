@@ -64,8 +64,8 @@ export const activitiesServices = {
 		);
 	},
 
-	listAllWithUsers: async (page, limit) => {
-		const activities = await activitiesRepository.listAllWithUsers(page, limit);
+	listAllWithUsers: async (page, limit, usuario_id) => {
+		const activities = await activitiesRepository.listAllWithUsers(page, limit, usuario_id);
 
 		if (activities.total === 0) {
 			throw new NotFoundException("Não há Atividades!");

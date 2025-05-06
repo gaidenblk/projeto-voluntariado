@@ -57,19 +57,6 @@ export const userRepository = {
 		}
 	},
 
-	listAllUsers: async () => {
-		const client = await pool.connect();
-		const query = `SELECT id, nome, apelido, email FROM users`;
-		try {
-			const { rows } = await client.query(query);
-			return rows;
-		} catch (error) {
-			throw new InternalServerException("Erro ao buscar Lista de Usuários");
-		} finally {
-			client.release();
-		}
-	},
-
 	updateUserById: async (usuario_id, nome, email, senha, tipo) => {
 		const client = await pool.connect();
 		const setClause = [];

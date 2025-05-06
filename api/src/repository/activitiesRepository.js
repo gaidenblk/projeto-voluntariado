@@ -131,7 +131,7 @@ export const activitiesRepository = {
 		}
 	},
 
-	listAllWithUsers: async (page = 1, perPage = 10) => {
+	listAllWithUsers: async (page = 1, perPage = 10, usuario_id) => {
 		const client = await pool.connect();
 		const offset = (page - 1) * perPage;
 
@@ -144,6 +144,10 @@ export const activitiesRepository = {
 				a.local,
 				a.vagas,
 				COUNT(u.id) AS total_inscritos,
+				EXISTS (
+					SELECT 1 FROM user_activity
+					WHERE usuario_id = $3 AND atividade_id = a.id
+				) AS inscrito,
 				COALESCE(
 					JSON_AGG(
 						JSON_BUILD_OBJECT(
@@ -167,7 +171,7 @@ export const activitiesRepository = {
 
 		try {
 			const [dataResult, countResult] = await Promise.all([
-				client.query(query, [perPage, offset]),
+				client.query(query, [perPage, offset, usuario_id]),
 				client.query(queryCount),
 			]);
 
