@@ -1,5 +1,4 @@
 import { activitiesRepository } from "../repository/activitiesRepository.js";
-import { userRepository } from "../repository/usersRepository.js";
 import { BadRequestException, NotFoundException } from "../utils/exceptions.js";
 
 export const activitiesServices = {
@@ -14,6 +13,9 @@ export const activitiesServices = {
 		}
 		if (titulo.length > 50) {
 			throw new BadRequestException("Titulo não pode ser maior que 50 Caracteres");
+		}
+		if (descricao.length > 150) {
+			throw new BadRequestException("Descrição não pode ser maior que 150 Caracteres");
 		}
 		if (local.length > 50) {
 			throw new BadRequestException("Local não pode ser maior que 50 Caracteres");
