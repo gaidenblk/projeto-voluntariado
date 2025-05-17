@@ -102,7 +102,7 @@ export const activitiesRepository = {
 			FROM activities a
 			LEFT JOIN user_activity ua ON a.id = ua.atividade_id
 			GROUP BY a.id
-			ORDER BY a.data DESC
+			ORDER BY a.created_at DESC
 			LIMIT $1 OFFSET $2
 		`;
 
@@ -163,7 +163,7 @@ export const activitiesRepository = {
 			LEFT JOIN user_activity ua ON a.id = ua.atividade_id
 			LEFT JOIN users u ON u.id = ua.usuario_id
 			GROUP BY a.id
-			ORDER BY a.data DESC
+			ORDER BY a.created_at DESC
 			LIMIT $1 OFFSET $2;
 		`;
 
