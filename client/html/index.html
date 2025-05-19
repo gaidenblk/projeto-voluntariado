@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/main.css" />
     <title>Vombora!</title>
   </head>
   <body>
-    <header>
-      <nav>
-        <div>Possui uma Conta?<a href="./login/">Entre!</a></div>
-        <div>Ainda não é Cadastrado? <a href="./register/">Cadastre-se!</a></div>
-      </nav>
-    </header>
-    <h1>Bem Vindo!</h1>
-    <h3>Faça parte do time em atividades voluntárias!</h3>
-    <p>Só tem brabo aqui!</p>
-
+    <main id="content">
+      <header class="header">
+        <div class="logo"><a class="link" href="/">Vombora!</a></div>
+        <nav>
+          <button onclick="navegarPara(`/register/`)">Registrar</button>
+          <button onclick="navegarPara(`/login/`)">Entrar</button>
+        </nav>
+      </header>
+      <h1>Bem Vindo!</h1>
+      <h3>Faça parte do time em atividades voluntárias!</h3>
+      <p>Só tem brabo aqui!</p>
+      <div>Possui uma Conta? <a href="./login/" class="link linkNav">Entre!</a></div>
+      <div>Ainda não é Cadastrado? <a href="./register/" class="link linkNav">Cadastre-se!</a></div>
+    </main>
+    <script src="/main.js"></script>
   </body>
 </html>

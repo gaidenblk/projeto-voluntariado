@@ -3,71 +3,34 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="./style.css" />
     <title>Vombora!</title>
   </head>
   <body>
-    <header>
-      <nav>
-        <div><a href="../">Voltar ao Inicio</a></div>
-        <div>Já possui uma Conta? <a href="../login/">Entre!</a></div>
-      </nav>
-    </header>
-    <h1>Login</h1>
-    <form action="register" method="post">
-      <label for="nome">Nome:</label>
-      <input type="text" name="nome" minlength="6" maxlength="25" required>
-      <label for="apelido">Apelido:</label>
-      <input type="text" name="apelido" minlength="6" maxlength="25" required>
-      <label for="email">Email:</label>
-      <input type="email" name="email" required>
-      <label for="senha">Senha:</label>
-      <input type="password" name="senha" minlength="6" maxlength="25" required>
-      <input type="submit" value="Cadastrar">
-    </form>
-
-    <script>
-      document.querySelector("form").addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const nome = document.getElementsByName("nome")[0].value;
-        const apelido = document.getElementsByName("apelido")[0].value;
-        const email = document.getElementsByName("email")[0].value;
-        const senha = document.getElementsByName("senha")[0].value;
-
-        const data = {
-          nome: nome,
-          apelido: apelido,
-          email: email,
-          senha: senha
-        };
-
-        console.log(data)
-
-        fetch("http://localhost:3000/api/auth/register", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
-        })
-          .then(response => {
-            if (!response.ok) {
-              return response.json().then(err => {
-                throw new Error(err.message || `Erro ${response.status}`);
-              });
-            }
-            return response.json();
-          })
-          .then(result => {
-            console.log("Cadastro efetuado com Sucesso!", result);
-            alert("Cadastro efetuado com Sucesso!")
-            window.location.href = "/login"
-          })
-          .catch(error => {
-            console.error("Erro ao criar Cadastro:", error.message);
-            alert("Erro ao criar Cadastro: " + error.message);
-          });
-      });
-    </script>
+    <main id="content">
+      <header class="header">
+        <div class="logo"><a class="link" href="/">Vombora!</a></div>
+        <nav>
+          <div>Já possui uma Conta?
+            <button onclick="navegarPara(`/login/`)">Entre!</button>
+          </div>
+        </nav>
+      </header>
+      <h1>Registrar</h1>
+      <form action="register" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" minlength="6" placeholder="somente o primeiro" maxlength="25" autofocus required>
+        <label for="apelido">Apelido:</label>
+        <input type="text" id="apelido" placeholder="min 6 caracteres..." minlength="6" maxlength="25" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="ex: email@email.com..." required>
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha" placeholder="min 6 caracteres..." minlength="6" maxlength="25" required>
+        <button type="submit" id="btnCadastrar">Cadastrar</button>
+      </form>
+    </main>
+    <script src="/main.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>

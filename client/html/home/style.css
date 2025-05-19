@@ -1,0 +1,241 @@
+#usuarioNome {
+	color: green;
+	/* filter: drop-shadow(1px 1px 0px #000000); */
+}
+
+#atividades {
+	position: relative;
+	min-width: 492px;
+	border: solid 1px;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#atividadeLimit {
+	top: 35px;
+	border-bottom: solid 1px;
+	z-index: 4;
+	background: white;
+	position: sticky;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+
+#atividadeLimit > h3 {
+	margin: 5px;
+	margin-left: 5px;
+}
+
+.inpt-descricao {
+	height: 50px;
+	max-width: 198px;
+	max-height: 120px;
+}
+
+#atividadeContainer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	padding-left: 5px;
+}
+
+.atividade-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	border: solid 1px;
+	border-radius: 5px;
+	width: 210px;
+
+	padding: 10px;
+	background-color: #fafafa;
+}
+
+.btn-criar-atividade {
+	margin-top: 0;
+	margin-left: 0;
+	width: 95%;
+	height: 95%;
+	font-size: large;
+	font-weight: bolder;
+	border: 5px dashed;
+	border-radius: 5px;
+	box-shadow: black 1px 1px 0px 2px;
+	justify-content: center;
+	align-items: center;
+	background-color: green;
+	color: #fafafa;
+}
+
+.btn-criar-atividade:hover {
+	background-color: rgb(154, 206, 154);
+}
+
+.btn-salvar {
+	margin-top: 60px;
+}
+
+.btn-inscricao {
+	width: 100%;
+}
+
+.card-criar-wrapper {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: solid green 1px;
+	border-radius: 5px;
+	position: relative;
+	width: 230px;
+	max-height: 450px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+.card-editar-wrapper {
+	position: relative;
+	max-height: 450px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+}
+
+.modal-input {
+	margin: 0px;
+	margin-top: 5px;
+}
+
+.modal-botoes {
+	display: flex;
+}
+
+.modal-criar-atividade {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: 5px;
+	background-color: white;
+	border: 5px dashed green;
+	border-radius: 5px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	z-index: 3;
+	box-sizing: border-box;
+}
+
+.modal-editar-atividade {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: 5px;
+	background-color: white;
+	border: 5px dashed green;
+	border-radius: 5px;
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+	z-index: 3;
+	box-sizing: border-box;
+}
+
+.modal-remove-atividade {
+	border-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	font-weight: bolder;
+	color: #fafafa;
+	background-color: rgba(0, 0, 0, 0.8);
+	align-items: center;
+	justify-content: center;
+}
+
+.atividade-card p {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.atividade-card h3 {
+	margin-top: 5px;
+}
+
+.card-id {
+	position: absolute;
+	top: 5px;
+	right: 10px;
+	color: gainsboro;
+	filter: drop-shadow(1px 1px 0px #000000);
+}
+
+.card-titulo {
+	color: #002859;
+	border-bottom: solid #002859;
+}
+
+.card-descricao {
+	border: solid gainsboro 1px;
+	border-radius: 5px;
+	height: 50px;
+	padding: 5px;
+	overflow-y: auto;
+}
+
+.card-inscritos {
+	font-size: small;
+	border: solid gainsboro 1px;
+	border-radius: 5px;
+	min-height: 66px;
+	padding: 5px;
+	overflow-y: auto;
+}
+
+.status {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+.status.inscrito {
+	background-color: #fafafa;
+	color: green;
+	font-weight: bold;
+}
+
+.status.nao-inscrito {
+	background-color: #fafafa;
+	color: red;
+	font-style: italic;
+}
+
+.expirada {
+	background-color: gainsboro;
+	color: #002859;
+	cursor: not-allowed;
+}
+
+.nao-inscrito {
+	background-color: lightgreen;
+	color: black;
+}
+
+.inscrito {
+	background-color: tomato;
+	color: black;
+}
+
+.sem-vagas {
+	background-color: gainsboro;
+	color: darkred;
+	cursor: not-allowed;
+}

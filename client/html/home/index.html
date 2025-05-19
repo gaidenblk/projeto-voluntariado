@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="./style.css" />
+    <title>Vombora!</title>
+  </head>
+  <body>
+    <main id="content">
+      <header class="header">
+        <div class="logo"><a class="link" href="/">Vombora!</a></div>
+        <nav>
+          <button id="btnLogout">Encerrar Sessão</button>
+        </nav>
+      </header>
+      <h2>Bem vindo, <span id="usuarioNome"></span>!</h2>
+      <div id="atividades">
+        <div id="atividadeLimit">
+          <h3>Atividades</h3>
+
+          <div id="paginacao">
+            <button id="btnAnterior">Anterior</button>
+            <span id="infoPagina">Página 1</span>
+            <button id="btnProxima">Próxima</button>
+          </div>
+
+          <div id="pageLimit">
+            <label for="selLimite">Limite por Página:</label>
+            <select name="selLimite" id="selLimite">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="15">15</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="atividadeContainer"></div>
+      </div>
+
+    </main>
+    <script src="/main.js"></script>
+    <script src="./index.js"></script>
+  </body>
+</html>

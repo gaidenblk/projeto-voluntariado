@@ -1,0 +1,252 @@
+/* pre {
+  background-color: #2b2727;
+  padding: 5px;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+code {
+  font-family: "Courier New", monospace;
+  color: #e4e69c;
+} */
+
+/* Area reservada aos estilos genéricos*/
+:root {
+	--base-color: #002859;
+}
+
+* {
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+	margin: 0;
+	display: flex;
+	overflow-x: hidden;
+}
+
+ul {
+	list-style-type: none;
+	list-style: none;
+	padding: 0;
+}
+
+a {
+	cursor: pointer;
+	color: var(--base-color);
+	text-decoration: none;
+}
+
+a:visited {
+	color: var(--base-color);
+}
+
+form {
+	display: flex;
+	border: solid 1px;
+	border-radius: 15px;
+	width: 170px;
+	flex-wrap: wrap;
+	padding: 10px;
+}
+
+button {
+	cursor: pointer;
+	border: solid 1px;
+	border-radius: 10px;
+	box-shadow: 2px 2px;
+	margin: 2px;
+	padding: 5px;
+	outline: none;
+	transition: ease 0.2s;
+}
+
+button:active {
+	box-shadow: 0 0;
+}
+
+button:hover {
+	background-color: grey;
+}
+
+input {
+	border: solid 1px;
+	border-radius: 10px;
+	margin: 2px;
+	padding: 5px;
+	outline: none;
+}
+
+select {
+	border: solid 1px;
+	border-radius: 5px;
+	outline: none;
+}
+
+textarea {
+	border: solid 1px;
+	outline: none;
+	border-radius: 7px;
+	padding: 5px;
+}
+
+table,
+th,
+td {
+	margin: 5px;
+	border: solid 1px;
+	border-radius: 5px;
+	border-collapse: separate;
+	padding: 5px;
+}
+
+/* Area reservada aos estilos com ID e Classes */
+
+.customUl {
+	list-style-type: none;
+	margin: 0;
+	padding-left: 15px;
+}
+
+.customUl li {
+	transition: ease;
+	border-radius: 7px;
+	margin: 5px;
+	padding: 5px;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+#content {
+	display: flex;
+	flex-direction: column;
+	transition: ease 0.8s;
+	flex: 1;
+	padding-top: 35px;
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-bottom: 10px;
+}
+
+.pop-notifica {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 6;
+	padding: 16px 24px;
+	border-radius: 8px;
+	color: #fff;
+	font-size: 16px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	pointer-events: none;
+}
+
+.pop-notifica.success {
+	background-color: #2ecc71; /* Verde */
+	border-left: 6px solid #27ae60;
+}
+
+.pop-notifica.error {
+	background-color: #e74c3c; /* Vermelho */
+	border-left: 6px solid #c0392b;
+}
+
+/* Seção do HEADER*/
+.header {
+	border-bottom: #002859 solid 1px;
+	position: fixed;
+	font-size: medium;
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	width: 100%;
+	height: 35px;
+	background-color: rgb(138, 170, 231);
+	top: 0;
+	left: 0;
+	display: flex;
+	z-index: 5;
+}
+
+.header nav {
+	display: flex;
+	justify-content: end;
+	align-items: center;
+	width: 100%;
+}
+
+.logo {
+	cursor: pointer;
+	border: solid;
+	font-size: larger;
+	font-weight: bold;
+	color: #002859;
+}
+
+.linkNav {
+	margin-top: 10px;
+	border-bottom: solid #002859;
+	width: fit-content;
+}
+
+/* Area reservada a AMIMAÇÕES */
+
+/* Define a animação chamada 'moverLado' */
+@keyframes moverLado {
+	0% {
+		transform: translateX(110%);
+	}
+	100% {
+		transform: translateX(0%);
+	}
+}
+
+/* Define a animação chamada 'sumir' */
+@keyframes sumirDireita {
+	0% {
+		transform: translateX(0%);
+		opacity: 100%;
+	}
+	100% {
+		transform: translateX(25%);
+		opacity: 0%;
+	}
+}
+
+@keyframes sumirEsquerda {
+	0% {
+		transform: translateX(0%);
+		opacity: 100%;
+	}
+	100% {
+		transform: translateX(-25%);
+		opacity: 0%;
+	}
+}
+
+/* Define a animação combinada chamada 'aparecer' */
+@keyframes aparecerEsquerda {
+	0% {
+		transform: translateX(25%);
+		opacity: 0%;
+	}
+	100% {
+		transform: translateX(0%);
+		opacity: 100%;
+	}
+}
+
+@keyframes aparecerDireita {
+	0% {
+		transform: translateX(-25%);
+		opacity: 0%;
+	}
+	100% {
+		transform: translateX(0%);
+		opacity: 100%;
+	}
+}
+
+@keyframes preencheCorLateral {
+	0% {
+	}
+}
