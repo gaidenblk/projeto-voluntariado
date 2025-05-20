@@ -68,7 +68,7 @@ cd projeto-voluntariado
 > Crie o arquivo **.env** na pasta api/ <br> com base no **.env_example** já fornecido:
 
 ```bash
-PORT=3000 # Seta a porta da API - Deixe como está
+PORT=3000 # Seta a porta da API
 DB_PORT=5454 # Aqui é a porta do Banco
 HOST='localhost' # Esse é o Host em que acessaremos a aplicação
 DB_HOST='localhost' # Aqui é o mesmo para o Banco
@@ -82,10 +82,6 @@ POSTGRES_DB=nomedobanco
 SENHA_ADMIN='senha123' # Essa senha é necessária para a Criação do admin
 ## Crie uma senha segura para que o usuario seja criado a fim de poder usar a aplicação
 ```
-
-> ⚠️ Caso queira mudar a porta da API precisará alterar o arquivo default.conf na pasta /client/nginx em: <br>
-> "proxy_pass http://backend:3000/api" <br>
-> e setar a mesma porta do .env
 
 > 🔐 A senha do admin será usada para acessar a interface administrativa.
 
